@@ -1,43 +1,21 @@
 # Software selection and package ownership
 
-This repository separates operating-system ownership from user application ownership.
+This is a Fedora-only project. Fedora's DNF package manager owns the OS, desktop session, system libraries, graphics drivers and all packages installed by fedora/install.sh. There is no Nix or Home Manager in this repository.
 
-- Fedora provides the kernel, AMD graphics drivers, Hyprland session, Waybar, portals, PipeWire, networking, power management, firmware utilities and Steam host integration.
-- Standalone Home Manager provides user applications, development tools, launchers, creative software and dotfiles.
-- Windows remains available for software, games or production workflows that require native Windows support.
+## Installed by the base setup
+Hyprland, Waybar, Kitty, Fuzzel, SwayNC, Hyprlock, Hypridle, Thunar, portals, PipeWire/WirePlumber, networking and Bluetooth applets, power-profiles-daemon (unless TLP is installed), AMD Mesa/RADV, Steam and diagnostic tools. See fedora/packages.txt for the exact manifest.
 
-## Daily desktop (Fedora)
-Hyprland, Waybar, Kitty, Fuzzel, SwayNC, Hyprlock, Hypridle, Thunar, xdg-desktop-portals, PipeWire/WirePlumber, NetworkManager, Blueman, power-profiles-daemon and AMD Mesa/RADV.
+## Optional applications
+The base installer intentionally does not install every optional launcher or creative application. Choose the apps you actually use and install them from Fedora repositories, RPM Fusion or Flathub after reviewing package provenance.
 
-## Terminal and development (Home Manager)
-Fish, Starship, zoxide, fzf, ripgrep, fd, bat, eza, btop, fastfetch, Git, GitHub CLI, Neovim, tmux, direnv, nix-direnv, shellcheck, shfmt, jq, yq, unzip, zip and rsync.
+- **Gaming:** Heroic Games Launcher, Lutris, Prism Launcher, Bottles, ProtonUp-Qt, Discord, MangoHud, GameMode and Gamescope.
+- **Creative:** Kdenlive, OBS Studio, Blender, Audacity, HandBrake, FFmpeg, GIMP, Inkscape, darktable and RawTherapee.
+- **Development:** Fish, Starship, zoxide, fzf, ripgrep, fd, bat, eza, btop, fastfetch, Git, GitHub CLI, Neovim, tmux, direnv, ShellCheck, shfmt, jq and yq.
 
-## Gaming
-- Steam + Proton — Steam is installed by Fedora/RPM Fusion so it uses the host graphics stack.
-- Heroic Games Launcher — Epic, GOG and Amazon Prime Gaming libraries.
-- Lutris — flexible launcher for Battle.net, EA App, Ubisoft Connect, GOG and custom Wine runners.
-- Prism Launcher — Minecraft Java instances and modpacks.
-- itch.io — indie games and game jams.
-- Bottles — isolated Wine environments for Windows applications and selected launchers.
-- ProtonUp-Qt — manage GE-Proton and other compatibility tools.
-- Discord — optional voice/text companion for multiplayer.
-- Wine, Winetricks, Protontricks, GameMode, Gamescope, MangoHud and Vulkan tools — compatibility and diagnostics.
+Steam is installed by the host package manifest. Keep the desktop on the Radeon 680M and use DRI_PRIME=1 %command% per demanding Steam game to select the RX 6500M. Do not force the dGPU globally.
 
-The Radeon 680M iGPU is the default desktop renderer; use DRI_PRIME=1 %command% per demanding Steam game to select the RX 6500M. Avoid forcing the dGPU globally because it increases idle power use.
+## Creative-work notes
+The RX 6500M has 4 GB VRAM. Start with 1080p timelines; 4K editing is more practical with proxies and reduced preview resolution. DaVinci Resolve compatibility with the Linux graphics stack is not guaranteed; keep Windows available if a Windows-only creative suite is mission-critical.
 
-## Creative production (Home Manager)
-- Kdenlive — primary general-purpose video editor; use proxies and reduced preview resolution for 4K footage.
-- OBS Studio — screen capture, recording and streaming.
-- Blender — 3D, compositing and motion graphics; complex scenes can exceed 4 GB VRAM.
-- Audacity — audio cleanup and editing; Ardour is an optional DAW.
-- HandBrake + FFmpeg — transcode, inspect and batch-process media.
-- GIMP + Inkscape — raster and vector graphics.
-- darktable + RawTherapee — RAW photo workflows.
-
-The RX 6500M has 4 GB VRAM. 1080p timelines are the sensible starting point; 4K editing is possible with proxies, but heavy grading, noise reduction and compositing can exceed GPU memory. DaVinci Resolve is not installed automatically because its Linux driver/base requirements and this GPU's VRAM make compatibility uncertain. Keep Windows if Resolve or another Windows-only creative suite is mission-critical.
-
-## Compatibility notes
-Proton and Wine are compatibility layers, not Windows emulation or anti-cheat workarounds. Easy Anti-Cheat and BattlEye work only when the individual game publisher enables/configures support for that title. Kernel-level anti-cheat, unsupported launchers/DRM and some competitive multiplayer games may remain unavailable. Check current reports for each title before buying or troubleshooting.
-
-## Longevity policy
-Keep overlays off by default. Use GameMode only while gaming and MangoHud only when needed. Do not force the RX 6500M globally, run TLP alongside power-profiles-daemon, disable Secure Boot as a generic fix, or apply unsupported CPU/GPU overclocking or undervolting.
+## Compatibility and longevity
+Proton and Wine are compatibility layers, not Windows emulation or anti-cheat workarounds. Anti-cheat support is title- and publisher-specific. Keep overlays off by default, use GameMode only while gaming, and avoid unsupported overclocking, undervolting or fixed clocks.
