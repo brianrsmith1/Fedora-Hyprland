@@ -26,7 +26,7 @@ bash fedora/install.sh
 bash shared/install-dotfiles.sh
 ```
 
-Log out and choose Hyprland in your session selector. The package manifest covers the core desktop and host stack; optional gaming and creative applications are listed in docs/software.md and are not silently installed by the base script.
+Log out and choose Hyprland in your session selector. The Hyprland desktop stack is installed from the third-party nett00n/hyprland COPR repository, which you should review before enabling. RPM Fusion is enabled for Steam and multimedia packages. The package manifest covers the core desktop and host stack; optional gaming and creative applications are listed in docs/software.md and are not silently installed by the base script.
 
 ## Validation status
 This is a Z16-targeted configuration, not a claim of physical validation. Test GPU selection, suspend/resume, external displays, Wi-Fi, audio, charger events, thermals and battery runtime on the actual laptop. Preserve Windows and keep a working recovery path.
