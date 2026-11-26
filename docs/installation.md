@@ -30,7 +30,7 @@ The desktop stack is installed from the third-party `nett00n/hyprland` COPR repo
    bash fedora/validate.sh
    bash fedora/install.sh
    ```
-   Run as your regular user, not with sudo. The installer asks before enabling the third-party Hyprland COPR, RPM Fusion and installing the listed host packages. It does not change partitions, Windows, EFI, bootloader or firmware. If TLP is installed, it skips power-profiles-daemon and the repository's profile helper.
+   Run as your regular user, not with sudo. The installer asks once before enabling the third-party Hyprland and Starship COPR repositories, RPM Fusion and installing the listed host packages. It does not change partitions, Windows, EFI, bootloader or firmware. If TLP is installed, it skips power-profiles-daemon and the repository's profile helper.
 4. Link the desktop configuration:
    ```bash
    bash shared/install-dotfiles.sh
