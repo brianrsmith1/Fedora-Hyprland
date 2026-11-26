@@ -13,7 +13,7 @@ for item in hypr waybar kitty fish fuzzel swaync; do
   elif [[ -L "$dest" ]]; then rm "$dest"; fi
   ln -s "$src" "$dest"
 done
-install -d "$BIN"
+chmod +x "$ROOT/shared/scripts/run-on-discrete-gpu.sh"
 ln -sfn "$ROOT/shared/scripts/run-on-discrete-gpu.sh" "$BIN/run-on-discrete-gpu"
 echo "Linked desktop configs and run-on-discrete-gpu."
 echo "Backups (if any) use suffix .backup-$STAMP. Ensure ~/.local/bin is on PATH."
