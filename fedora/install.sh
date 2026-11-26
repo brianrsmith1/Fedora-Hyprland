@@ -17,7 +17,11 @@ sudo dnf install -y \
   "https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-${FEDORA_VERSION}.noarch.rpm"
 mapfile -t packages < <(grep -Ev '^[[:space:]]*(#|$)' "$ROOT/fedora/packages.txt")
 if rpm -q tlp >/dev/null 2>&1; then
-  echo "TLP is installed; skipping power-profiles-daemon to avoid competing power managers."
+  echo "TLP is installed; skipping power-profiles-daemon and the repository power-profile helper."
+  if rpm -q power-profiles-daemon >/dev/null 2>&1; then
+    echo "WARNING: TLP and power-profiles-daemon are both already installed. Keep only one active power manager."
+    echo "If you intend to keep TLP, review and disable power-profiles-daemon manually."
+  fi
   filtered=()
   for package in "${packages[@]}"; do [[ "$package" == "power-profiles-daemon" ]] || filtered+=("$package"); done
   packages=("${filtered[@]}")
