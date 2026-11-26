@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
+# shellcheck disable=SC1091
 [[ -r /etc/os-release ]] && . /etc/os-release
 [[ "${ID:-}" == fedora ]] || { echo "This installer is for Fedora only." >&2; exit 1; }
 [[ "${EUID}" -ne 0 ]] || { echo "Run as your regular user, not with sudo." >&2; exit 1; }
