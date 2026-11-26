@@ -21,7 +21,6 @@ Use the in-kernel **amdgpu** kernel driver with Mesa **RADV** for Vulkan. This i
 The shared helper is installed as **run-on-discrete-gpu**. Example:
 ~~~sh
 run-on-discrete-gpu glxinfo -B
-run-on-discrete-gpu steam
 ~~~
 For Steam, it is usually better to leave Steam itself on the iGPU and set this per demanding game in Properties -> Launch Options:
 ~~~sh
