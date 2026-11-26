@@ -6,9 +6,10 @@ This is a Fedora-only project. Fedora's DNF package manager owns the OS, desktop
 Hyprland, Waybar, Kitty, Fuzzel, SwayNC, Hyprlock, Hypridle, Thunar, portals, PipeWire/WirePlumber, networking and Bluetooth applets, power-profiles-daemon (unless TLP is installed), AMD Mesa/RADV, Steam and diagnostic tools. See fedora/packages.txt for the exact manifest.
 
 ## Optional applications
-The base installer intentionally does not install every optional launcher or creative application. Choose the apps you actually use and install them from Fedora repositories, RPM Fusion or Flathub after reviewing package provenance.
+The base installer intentionally does not install every optional launcher, appearance editor or creative application. Choose the apps you actually use and install them from Fedora repositories, RPM Fusion or Flathub after reviewing package provenance.
 
 - **Gaming:** Heroic Games Launcher, Lutris, Prism Launcher, Bottles, ProtonUp-Qt, Discord, MangoHud, GameMode and Gamescope.
+- **Appearance (optional):** nwg-look, if available from a trusted repository.
 - **Creative:** Kdenlive, OBS Studio, Blender, Audacity, HandBrake, FFmpeg, GIMP, Inkscape, darktable and RawTherapee.
 - **Development (included in the base setup):** Fish, Starship, zoxide, fzf, ripgrep, fd, bat, eza, btop, fastfetch, Git, GitHub CLI, Neovim, tmux, direnv, ShellCheck, shfmt, jq, yq, rsync, unzip and zip.
 
