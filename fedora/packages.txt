@@ -1,6 +1,7 @@
 # Fedora owns the OS, desktop session, system services and host graphics stack.
 # Core desktop and hardware packages only; optional apps are documented separately.
 hyprland
+curl
 fish
 starship
 zoxide
