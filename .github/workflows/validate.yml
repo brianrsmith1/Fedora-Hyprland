@@ -23,3 +23,20 @@ jobs:
           sudo apt-get install -y shellcheck
       - name: ShellCheck
         run: find . -type f -name '*.sh' -print0 | xargs -0 -r shellcheck
+
+  fedora-package-resolution:
+    name: Resolve Fedora packages
+    runs-on: ubuntu-latest
+    container: fedora:latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Enable required repositories and resolve manifest
+        run: |
+          dnf install -y dnf-plugins-core
+          dnf copr enable -y nett00n/hyprland
+          releasever="$(rpm -E %fedora)"
+          dnf install -y \
+            "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-${releasever}.noarch.rpm" \
+            "https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-${releasever}.noarch.rpm"
+          mapfile -t packages < <(grep -Ev '^[[:space:]]*(#|$)' fedora/packages.txt)
+          dnf install -y "${packages[@]}"
