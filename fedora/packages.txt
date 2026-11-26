@@ -28,6 +28,7 @@ kitty
 fuzzel
 SwayNotificationCenter
 hyprlock
+hyprpaper
 hypridle
 xdg-desktop-portal-hyprland
 xdg-desktop-portal-gtk
