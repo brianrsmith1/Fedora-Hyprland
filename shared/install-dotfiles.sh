@@ -15,5 +15,6 @@ for item in hypr waybar kitty fish fuzzel swaync; do
 done
 chmod +x "$ROOT/shared/scripts/run-on-discrete-gpu.sh"
 ln -sfn "$ROOT/shared/scripts/run-on-discrete-gpu.sh" "$BIN/run-on-discrete-gpu"
+ln -sfn "$ROOT/shared/starship.toml" "$CONFIG/starship.toml"
 echo "Linked desktop configs and run-on-discrete-gpu."
 echo "Backups (if any) use suffix .backup-$STAMP. Ensure ~/.local/bin is on PATH."
