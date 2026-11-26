@@ -27,7 +27,7 @@ zip
 waybar
 kitty
 fuzzel
-swaync
+SwayNotificationCenter
 hyprlock
 hypridle
 xdg-desktop-portal-hyprland
@@ -36,8 +36,8 @@ polkit-gnome
 thunar
 thunar-archive-plugin
 file-roller
-NetworkManager-gnome
-NetworkManager-connection-editor
+network-manager-applet
+nm-connection-editor
 blueman
 pipewire
 pipewire-alsa
