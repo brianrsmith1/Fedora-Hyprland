@@ -36,9 +36,9 @@ polkit-gnome
 thunar
 thunar-archive-plugin
 file-roller
-network-manager-applet
+NetworkManager-gnome
+NetworkManager-connection-editor
 blueman
-nwg-look
 pipewire
 pipewire-alsa
 pipewire-pulseaudio
@@ -51,7 +51,6 @@ cliphist
 grim
 slurp
 swappy
-swww
 wlogout
 udiskie
 gvfs
