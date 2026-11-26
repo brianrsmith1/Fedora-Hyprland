@@ -1,8 +1,8 @@
-name: Validate configuration
+name: Validate Fedora Hyprland configuration
 
 on:
   push:
-    branches: [main, fedora-home-manager-catppuccin-polish]
+    branches: [main]
   pull_request:
   workflow_dispatch:
 
@@ -16,27 +16,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Bash syntax
-        run: |
-          find . -type f -name '*.sh' -print0 | xargs -0 -r -n1 bash -n
+        run: find . -type f -name '*.sh' -print0 | xargs -0 -r -n1 bash -n
       - name: Install ShellCheck
         run: |
           sudo apt-get update
           sudo apt-get install -y shellcheck
       - name: ShellCheck
-        run: |
-          find . -type f -name '*.sh' -print0 | xargs -0 -r shellcheck
-
-  nix:
-    name: Evaluate Home Manager flake
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: cachix/install-nix-action@v31
-        with:
-          github_access_token: ${{ secrets.GITHUB_TOKEN }}
-          extra_nix_config: |
-            experimental-features = nix-command flakes
-      - name: Resolve flake inputs
-        run: nix flake metadata .
-      - name: Evaluate Home Manager activation derivation
-        run: nix eval --raw '.#homeConfigurations."brian@z16".activationPackage.drvPath'
+        run: find . -type f -name '*.sh' -print0 | xargs -0 -r shellcheck
