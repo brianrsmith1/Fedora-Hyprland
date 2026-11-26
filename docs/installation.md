@@ -16,7 +16,7 @@ Partitioning is a high-impact manual step. If the disk layout is unclear, stop a
 
 ## Third-party package sources
 
-The desktop stack is installed from the third-party `nett00n/hyprland` COPR repository (Hyprland, Hypridle, Hyprlock, Hyprpaper, Waybar and SwayNotificationCenter). RPM Fusion is enabled for Steam and multimedia packages. These are external package sources, not Fedora Project repositories; review the maintainers and package builds before accepting the installer prompt.
+The desktop stack is installed from the third-party `nett00n/hyprland` COPR repository (Hyprland, Hypridle, Hyprlock, Hyprpaper, Waybar and SwayNotificationCenter). Starship is installed from the third-party `atim/starship` COPR repository. RPM Fusion is enabled for Steam and multimedia packages. These are external package sources, not Fedora Project repositories; review the maintainers and package builds before accepting the installer prompt.
 
 ## Install this Fedora desktop
 1. Install and fully update Fedora Workstation, then reboot.
