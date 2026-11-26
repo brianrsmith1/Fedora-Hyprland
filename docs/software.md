@@ -11,7 +11,7 @@ The base installer intentionally does not install every optional launcher, appea
 - **Gaming:** Heroic Games Launcher, Lutris, Prism Launcher, Bottles, ProtonUp-Qt, Discord, MangoHud, GameMode and Gamescope.
 - **Appearance (optional):** nwg-look, if available from a trusted repository.
 - **Creative:** Kdenlive, OBS Studio, Blender, Audacity, HandBrake, FFmpeg, GIMP, Inkscape, darktable and RawTherapee.
-- **Development (included in the base setup):** Fish, Starship, zoxide, fzf, ripgrep, fd, bat, eza, btop, fastfetch, Git, GitHub CLI, Neovim, tmux, direnv, ShellCheck, shfmt, jq, yq, rsync, unzip and zip.
+- **Development (included in the base setup):** Fish, Starship, zoxide, fzf, ripgrep, fd, bat, eza, btop, fastfetch, Git, GitHub CLI, Neovim, tmux, direnv, ShellCheck, jq, yq, rsync, unzip and zip.
 
 Steam is installed by the host package manifest. Keep the desktop on the Radeon 680M and use DRI_PRIME=1 %command% per demanding Steam game to select the RX 6500M. Do not force the dGPU globally.
 
