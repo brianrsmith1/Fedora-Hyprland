@@ -18,7 +18,6 @@ neovim
 tmux
 direnv
 shellcheck
-shfmt
 jq
 yq
 rsync
@@ -32,7 +31,7 @@ hyprlock
 hypridle
 xdg-desktop-portal-hyprland
 xdg-desktop-portal-gtk
-polkit-gnome
+mate-polkit
 thunar
 thunar-archive-plugin
 file-roller
