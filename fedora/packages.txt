@@ -1,5 +1,5 @@
-# Fedora owns the operating system, drivers, desktop session and system services.
-# User applications and CLI tools are managed by standalone Home Manager.
+# Fedora owns the OS, desktop session, system services and host graphics stack.
+# Core desktop and hardware packages only; optional apps are documented separately.
 hyprland
 waybar
 kitty
