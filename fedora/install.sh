@@ -8,13 +8,14 @@ ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 for cmd in sudo dnf rpm; do command -v "$cmd" >/dev/null 2>&1 || { echo "Missing required command: $cmd" >&2; exit 1; }; done
 bash "$ROOT/fedora/validate.sh"
 echo "Installs Fedora-native Hyprland, AMD Mesa, audio, portals, host tools and Steam."
-echo "The Hyprland desktop packages are provided by the third-party nett00n/hyprland COPR repository."
+echo "Hyprland desktop packages use the third-party nett00n/hyprland COPR; Starship uses atim/starship."
 echo "It does not alter partitions, Windows, EFI entries, bootloader or firmware."
 read -r -p "Continue? [y/N] " answer
 [[ "$answer" =~ ^[Yy]$ ]] || exit 0
 FEDORA_VERSION="$(rpm -E %fedora)"
 sudo dnf install -y dnf-plugins-core
 sudo dnf copr enable -y nett00n/hyprland
+sudo dnf copr enable -y atim/starship
 sudo dnf install -y \
   "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-${FEDORA_VERSION}.noarch.rpm" \
   "https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-${FEDORA_VERSION}.noarch.rpm"
