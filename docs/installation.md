@@ -14,6 +14,10 @@
 
 Partitioning is a high-impact manual step. If the disk layout is unclear, stop and inspect it rather than guessing.
 
+## Third-party package sources
+
+The desktop stack is installed from the third-party `nett00n/hyprland` COPR repository (Hyprland, Hypridle, Hyprlock, Hyprpaper, Waybar and SwayNotificationCenter). RPM Fusion is enabled for Steam and multimedia packages. These are external package sources, not Fedora Project repositories; review the maintainers and package builds before accepting the installer prompt.
+
 ## Install this Fedora desktop
 1. Install and fully update Fedora Workstation, then reboot.
 2. Clone this repository:
@@ -26,7 +30,7 @@ Partitioning is a high-impact manual step. If the disk layout is unclear, stop a
    bash fedora/validate.sh
    bash fedora/install.sh
    ```
-   Run as your regular user, not with sudo. The installer asks before enabling RPM Fusion and installing the listed host packages. It does not change partitions, Windows, EFI, bootloader or firmware. If TLP is installed, it skips power-profiles-daemon and the repository's profile helper.
+   Run as your regular user, not with sudo. The installer asks before enabling the third-party Hyprland COPR, RPM Fusion and installing the listed host packages. It does not change partitions, Windows, EFI, bootloader or firmware. If TLP is installed, it skips power-profiles-daemon and the repository's profile helper.
 4. Link the desktop configuration:
    ```bash
    bash shared/install-dotfiles.sh
