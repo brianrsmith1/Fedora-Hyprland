@@ -1,0 +1,10 @@
+result
+*.qcow2
+*.iso
+*.img
+*.log
+.DS_Store
+.env
+*.swp
+# Machine-generated hardware data stays local
+nixos/hosts/z16/hardware-configuration.nix
