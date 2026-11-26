@@ -5,16 +5,22 @@ CONFIG="$HOME/.config"
 BIN="$HOME/.local/bin"
 STAMP="$(date +%Y%m%d-%H%M%S)"
 mkdir -p "$CONFIG" "$BIN"
+backup_target() {
+  local target="$1"
+  if [[ -e "$target" && ! -L "$target" ]]; then mv "$target" "${target}.backup-$STAMP"
+  elif [[ -L "$target" ]]; then rm "$target"; fi
+}
 for item in hypr waybar kitty fish fuzzel swaync; do
   src="$ROOT/shared/$item"
   [[ -d "$src" ]] || continue
   dest="$CONFIG/$item"
-  if [[ -e "$dest" && ! -L "$dest" ]]; then mv "$dest" "${dest}.backup-$STAMP"
-  elif [[ -L "$dest" ]]; then rm "$dest"; fi
+  backup_target "$dest"
   ln -s "$src" "$dest"
 done
+backup_target "$CONFIG/starship.toml"
+ln -s "$ROOT/shared/starship.toml" "$CONFIG/starship.toml"
+backup_target "$BIN/run-on-discrete-gpu"
 chmod +x "$ROOT/shared/scripts/run-on-discrete-gpu.sh"
-ln -sfn "$ROOT/shared/scripts/run-on-discrete-gpu.sh" "$BIN/run-on-discrete-gpu"
-ln -sfn "$ROOT/shared/starship.toml" "$CONFIG/starship.toml"
+ln -s "$ROOT/shared/scripts/run-on-discrete-gpu.sh" "$BIN/run-on-discrete-gpu"
 echo "Linked desktop configs and run-on-discrete-gpu."
 echo "Backups (if any) use suffix .backup-$STAMP. Ensure ~/.local/bin is on PATH."
