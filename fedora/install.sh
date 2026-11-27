@@ -29,6 +29,7 @@ if rpm -q tlp >/dev/null 2>&1; then
 fi
 sudo dnf install -y "${packages[@]}"
 if ! rpm -q tlp >/dev/null 2>&1; then bash "$ROOT/fedora/install-power-profile.sh"; fi
+xdg-user-dirs-update
 if ! fc-list 2>/dev/null | grep -qi "JetBrainsMono Nerd Font"; then bash "$ROOT/fedora/install-nerd-font.sh"; fi
 echo "Fedora host packages installed."
 echo "Next: install shared desktop configs with: bash shared/install-dotfiles.sh"

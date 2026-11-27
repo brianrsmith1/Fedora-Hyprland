@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Post-install smoke checks for the Fedora 45 + Hyprland ThinkPad Z16 setup.
-# This script is diagnostic: it does not change packages, services or firmware.
+# Diagnostic smoke checks for the Fedora + Hyprland ThinkPad Z16 setup.
+# This script does not change packages, services, firmware or partitions.
 set -uo pipefail
 
 ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -20,16 +20,44 @@ else
 fi
 
 printf '\n== Core commands ==\n'
-for cmd in Hyprland waybar kitty fuzzel swaync hyprlock hypridle hyprpaper thunar fish starship tuned-adm lspci glxinfo vulkaninfo wpctl nmcli brightnessctl; do
-  if command -v "$cmd" >/dev/null 2>&1; then
-    ok "$cmd"
-  else
-    case "$cmd" in
-      glxinfo|vulkaninfo|lspci|tuned-adm) warn "$cmd is unavailable; install/check its Fedora package" ;;
-      *) fail "$cmd is missing" ;;
-    esac
-  fi
+required=(Hyprland waybar kitty fuzzel swaync hyprlock hypridle hyprpaper thunar fish starship wpctl nmcli brightnessctl wl-paste wl-copy cliphist grim slurp swappy playerctl swaync-client wlogout)
+optional=(tuned-adm lspci glxinfo vulkaninfo)
+for cmd in "${required[@]}"; do
+  command -v "$cmd" >/dev/null 2>&1 && ok "$cmd" || fail "$cmd is missing"
 done
+for cmd in "${optional[@]}"; do
+  command -v "$cmd" >/dev/null 2>&1 && ok "$cmd" || warn "$cmd is unavailable; install/check its Fedora package"
+done
+
+printf '\n== Configuration files ==\n'
+for file in \
+  shared/hypr/hyprland.conf shared/hypr/hypridle.conf shared/hypr/hyprlock.conf \
+  shared/waybar/config.jsonc shared/waybar/style.css shared/kitty/kitty.conf \
+  shared/fuzzel/fuzzel.ini shared/swaync/config.json shared/swaync/style.css \
+  shared/fish/config.fish shared/starship.toml; do
+  [[ -s "$ROOT/$file" ]] && ok "$file exists" || fail "$file is missing or empty"
+done
+
+if command -v python3 >/dev/null 2>&1; then
+  python3 - "$ROOT" <<'PY'
+import json
+import pathlib
+import sys
+
+root = pathlib.Path(sys.argv[1])
+for relative in ("shared/waybar/config.jsonc", "shared/swaync/config.json"):
+    path = root / relative
+    try:
+        json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        print(f"[FAIL] {relative}: {exc}", file=sys.stderr)
+        sys.exit(1)
+    print(f"[OK]   {relative} parses as JSON")
+PY
+  [[ $? -eq 0 ]] || fail "JSON configuration validation failed"
+else
+  warn "python3 unavailable; skipped JSON configuration validation"
+fi
 
 printf '\n== Desktop configuration links ==\n'
 for item in hypr waybar kitty fish fuzzel swaync; do
@@ -43,28 +71,21 @@ for item in hypr waybar kitty fish fuzzel swaync; do
     warn "~/.config/$item is not installed yet (run bash shared/install-dotfiles.sh)"
   fi
 done
-if [[ -x "$HOME/.local/bin/run-on-discrete-gpu" ]]; then
-  ok "run-on-discrete-gpu helper is installed"
+if [[ -L "$HOME/.config/starship.toml" && "$(readlink -f -- "$HOME/.config/starship.toml" 2>/dev/null || true)" == "$(readlink -f -- "$ROOT/shared/starship.toml")" ]]; then
+  ok "~/.config/starship.toml points to this checkout"
 else
-  warn "run-on-discrete-gpu helper is missing"
+  warn "~/.config/starship.toml is not linked to this checkout"
 fi
+[[ -x "$HOME/.local/bin/run-on-discrete-gpu" ]] && ok "run-on-discrete-gpu helper is executable" || warn "run-on-discrete-gpu helper is missing or not executable"
 
 printf '\n== AMD graphics ==\n'
 if command -v lspci >/dev/null 2>&1; then
   gpu_report="$(lspci -nnk 2>/dev/null | grep -A3 -Ei 'VGA compatible controller|Display controller|3D controller' || true)"
   if [[ -n "$gpu_report" ]]; then
     printf '%s\n' "$gpu_report"
-    if grep -qi 'Kernel driver in use: amdgpu' <<<"$gpu_report"; then
-      ok "amdgpu kernel driver is bound to at least one display device"
-    else
-      warn "No amdgpu binding found in the display-device report"
-    fi
+    grep -qi 'Kernel driver in use: amdgpu' <<<"$gpu_report" && ok "amdgpu is bound to at least one display device" || warn "No amdgpu binding found in the display-device report"
     gpu_count="$(grep -Eic 'VGA compatible controller|Display controller|3D controller' <<<"$gpu_report" || true)"
-    if (( gpu_count >= 2 )); then
-      ok "Two or more graphics devices are visible"
-    else
-      warn "Only one graphics device was detected; confirm the RX 6500M is visible"
-    fi
+    (( gpu_count >= 2 )) && ok "Two or more graphics devices are visible" || warn "Only one graphics device detected; confirm the RX 6500M is visible"
   else
     warn "No display controller was found by lspci"
   fi
@@ -78,7 +99,6 @@ if command -v glxinfo >/dev/null 2>&1; then
   printf '\nDRI_PRIME=1 OpenGL renderer (discrete-GPU test):\n'
   DRI_PRIME=1 glxinfo -B 2>/dev/null | grep -E 'OpenGL vendor|OpenGL renderer|OpenGL version' || warn "DRI_PRIME=1 renderer query failed; test after logging into Hyprland"
 fi
-
 if command -v vulkaninfo >/dev/null 2>&1; then
   printf '\nVulkan devices (summary):\n'
   vulkaninfo --summary 2>/dev/null | grep -E 'GPU[0-9]+|deviceName|driverName' | head -20 || warn "Vulkan device query failed"

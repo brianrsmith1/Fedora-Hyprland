@@ -18,8 +18,7 @@ link_target() {
     fi
   fi
 
-  # Preserve files, directories, and unrelated symlinks rather than deleting
-  # them. The backup suffix is unique to this installer run.
+  # Preserve files, directories, and unrelated symlinks rather than deleting them.
   if [[ -e "$dest" || -L "$dest" ]]; then
     mv -- "$dest" "${dest}.backup-$STAMP"
     echo "Backed up: $dest -> ${dest}.backup-$STAMP"
@@ -33,7 +32,6 @@ for item in hypr waybar kitty fish fuzzel swaync; do
 done
 
 link_target "$ROOT/shared/starship.toml" "$CONFIG/starship.toml"
-chmod +x "$ROOT/shared/scripts/run-on-discrete-gpu.sh"
 link_target "$ROOT/shared/scripts/run-on-discrete-gpu.sh" "$BIN/run-on-discrete-gpu"
 
 echo "Desktop configs linked."
