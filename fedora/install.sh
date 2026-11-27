@@ -9,7 +9,7 @@ for cmd in sudo dnf rpm; do command -v "$cmd" >/dev/null 2>&1 || { echo "Missing
 bash "$ROOT/fedora/validate.sh"
 echo "Installs Fedora-native Hyprland, AMD Mesa, audio, portals, host tools and Steam."
 echo "Hyprland desktop packages use the third-party nett00n/hyprland COPR; Starship uses atim/starship."
-echo "Power profiles use Fedora's TuneD/tuned-ppd stack; TLP is not configured by this installer."
+echo "Power profiles use Fedora's TuneD/tuned-ppd stack: Balanced on AC, Power Saver on battery when available."
 echo "It does not alter partitions, Windows, EFI entries, bootloader or firmware."
 read -r -p "Continue? [y/N] " answer
 [[ "$answer" =~ ^[Yy]$ ]] || exit 0

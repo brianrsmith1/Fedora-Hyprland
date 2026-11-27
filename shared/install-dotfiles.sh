@@ -3,24 +3,39 @@ set -euo pipefail
 ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 CONFIG="$HOME/.config"
 BIN="$HOME/.local/bin"
-STAMP="$(date +%Y%m%d-%H%M%S)"
+STAMP="$(date +%Y%m%d-%H%M%S)-$$"
 mkdir -p "$CONFIG" "$BIN"
-backup_target() {
-  local target="$1"
-  if [[ -e "$target" && ! -L "$target" ]]; then mv "$target" "${target}.backup-$STAMP"
-  elif [[ -L "$target" ]]; then rm "$target"; fi
+
+link_target() {
+  local src="$1" dest="$2" current
+  [[ -e "$src" ]] || { echo "Missing source: $src" >&2; return 1; }
+
+  if [[ -L "$dest" ]]; then
+    current="$(readlink -f -- "$dest" 2>/dev/null || true)"
+    if [[ "$current" == "$(readlink -f -- "$src")" ]]; then
+      echo "Already linked: $dest"
+      return 0
+    fi
+  fi
+
+  # Preserve files, directories, and unrelated symlinks rather than deleting
+  # them. The backup suffix is unique to this installer run.
+  if [[ -e "$dest" || -L "$dest" ]]; then
+    mv -- "$dest" "${dest}.backup-$STAMP"
+    echo "Backed up: $dest -> ${dest}.backup-$STAMP"
+  fi
+  ln -s -- "$src" "$dest"
+  echo "Linked: $dest"
 }
+
 for item in hypr waybar kitty fish fuzzel swaync; do
-  src="$ROOT/shared/$item"
-  [[ -d "$src" ]] || continue
-  dest="$CONFIG/$item"
-  backup_target "$dest"
-  ln -s "$src" "$dest"
+  link_target "$ROOT/shared/$item" "$CONFIG/$item"
 done
-backup_target "$CONFIG/starship.toml"
-ln -s "$ROOT/shared/starship.toml" "$CONFIG/starship.toml"
-backup_target "$BIN/run-on-discrete-gpu"
+
+link_target "$ROOT/shared/starship.toml" "$CONFIG/starship.toml"
 chmod +x "$ROOT/shared/scripts/run-on-discrete-gpu.sh"
-ln -s "$ROOT/shared/scripts/run-on-discrete-gpu.sh" "$BIN/run-on-discrete-gpu"
-echo "Linked desktop configs and run-on-discrete-gpu."
-echo "Backups (if any) use suffix .backup-$STAMP. Ensure ~/.local/bin is on PATH."
+link_target "$ROOT/shared/scripts/run-on-discrete-gpu.sh" "$BIN/run-on-discrete-gpu"
+
+echo "Desktop configs linked."
+echo "Backups, if any, use suffix .backup-$STAMP."
+echo "Ensure ~/.local/bin is on PATH; log out and select the Hyprland session."
