@@ -55,7 +55,7 @@ wlogout
 udiskie
 gvfs
 gvfs-mtp
-power-profiles-daemon
+tuned-ppd
 jetbrains-mono-fonts
 google-noto-sans-fonts
 google-noto-emoji-fonts
