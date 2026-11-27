@@ -9,6 +9,7 @@ for cmd in sudo dnf rpm; do command -v "$cmd" >/dev/null 2>&1 || { echo "Missing
 bash "$ROOT/fedora/validate.sh"
 echo "Installs Fedora-native Hyprland, AMD Mesa, audio, portals, host tools and Steam."
 echo "Hyprland desktop packages use the third-party nett00n/hyprland COPR; Starship uses atim/starship."
+echo "Power profiles use Fedora's TuneD/tuned-ppd stack; TLP is not configured by this installer."
 echo "It does not alter partitions, Windows, EFI entries, bootloader or firmware."
 read -r -p "Continue? [y/N] " answer
 [[ "$answer" =~ ^[Yy]$ ]] || exit 0
@@ -21,13 +22,9 @@ sudo dnf install -y \
   "https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-${FEDORA_VERSION}.noarch.rpm"
 mapfile -t packages < <(grep -Ev '^[[:space:]]*(#|$)' "$ROOT/fedora/packages.txt")
 if rpm -q tlp >/dev/null 2>&1; then
-  echo "TLP is installed; skipping power-profiles-daemon and the repository power-profile helper."
-  if rpm -q power-profiles-daemon >/dev/null 2>&1; then
-    echo "WARNING: TLP and power-profiles-daemon are both already installed. Keep only one active power manager."
-    echo "If you intend to keep TLP, review and disable power-profiles-daemon manually."
-  fi
+  echo "TLP is installed; skipping the repository TuneD power-profile helper."
   filtered=()
-  for package in "${packages[@]}"; do [[ "$package" == "power-profiles-daemon" ]] || filtered+=("$package"); done
+  for package in "${packages[@]}"; do [[ "$package" == "tuned-ppd" ]] || filtered+=("$package"); done
   packages=("${filtered[@]}")
 fi
 sudo dnf install -y "${packages[@]}"
