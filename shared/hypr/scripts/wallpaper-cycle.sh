@@ -24,7 +24,7 @@ command -v hyprpaper >/dev/null 2>&1 || { message "hyprpaper is not installed.";
 
 selected="${wallpapers[RANDOM % ${#wallpapers[@]}]}"
 # hyprpaper starts asynchronously with the compositor; retry its IPC briefly.
-for attempt in {1..20}; do
+for _ in {1..20}; do
   if hyprctl hyprpaper wallpaper ",$selected" >/dev/null 2>&1; then
     message "Wallpaper: $selected"
     exit 0

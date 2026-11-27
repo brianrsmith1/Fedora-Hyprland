@@ -134,7 +134,7 @@ elif rpm -q tuned-ppd >/dev/null 2>&1; then
   else
     warn "tuned.service is not active"
   fi
-  command -v tuned-adm >/dev/null 2>&1 && tuned-adm active || true
+  if command -v tuned-adm >/dev/null 2>&1; then\n    tuned-adm active || true\n  fi
 else
   warn "Neither TLP nor tuned-ppd is installed"
 fi
