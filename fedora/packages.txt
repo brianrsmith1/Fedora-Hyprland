@@ -23,6 +23,7 @@ yq
 rsync
 unzip
 zip
+python3
 waybar
 kitty
 fuzzel
@@ -30,8 +31,11 @@ SwayNotificationCenter
 hyprlock
 hyprpaper
 hypridle
+xdg-desktop-portal
 xdg-desktop-portal-hyprland
 xdg-desktop-portal-gtk
+xdg-user-dirs
+xdg-utils
 mate-polkit
 thunar
 thunar-archive-plugin
