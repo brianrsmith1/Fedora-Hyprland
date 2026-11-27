@@ -14,7 +14,11 @@ fail() { printf '  [FAIL] %s\n' "$*"; ((errors+=1)); }
 if [[ -r /etc/os-release ]]; then
   # shellcheck disable=SC1091
   . /etc/os-release
-  [[ "${ID:-}" == fedora ]] && ok "Fedora detected (${VERSION_ID:-unknown})" || fail "Expected Fedora; found ${PRETTY_NAME:-unknown}"
+  if [[ "${ID:-}" == fedora ]]; then
+    ok "Fedora detected (${VERSION_ID:-unknown})"
+  else
+    fail "Expected Fedora; found ${PRETTY_NAME:-unknown}"
+  fi
 else
   fail "/etc/os-release is unavailable"
 fi
@@ -68,17 +72,17 @@ for item in hypr waybar kitty fish fuzzel swaync; do
   target="$HOME/.config/$item"
   expected="$ROOT/shared/$item"
   if [[ -L "$target" && "$(readlink -f -- "$target" 2>/dev/null || true)" == "$(readlink -f -- "$expected")" ]]; then
-    ok "~/.config/$item points to this checkout"
+    ok "$HOME/.config/$item points to this checkout"
   elif [[ -e "$target" || -L "$target" ]]; then
-    warn "~/.config/$item exists but is not linked to this checkout"
+    warn "$HOME/.config/$item exists but is not linked to this checkout"
   else
-    warn "~/.config/$item is not installed yet (run bash shared/install-dotfiles.sh)"
+    warn "$HOME/.config/$item is not installed yet (run bash shared/install-dotfiles.sh)"
   fi
 done
 if [[ -L "$HOME/.config/starship.toml" && "$(readlink -f -- "$HOME/.config/starship.toml" 2>/dev/null || true)" == "$(readlink -f -- "$ROOT/shared/starship.toml")" ]]; then
-  ok "~/.config/starship.toml points to this checkout"
+  ok "$HOME/.config/starship.toml points to this checkout"
 else
-  warn "~/.config/starship.toml is not linked to this checkout"
+  warn "$HOME/.config/starship.toml is not linked to this checkout"
 fi
 if [[ -x "$HOME/.local/bin/run-on-discrete-gpu" ]]; then
   ok "run-on-discrete-gpu helper is executable"
@@ -125,7 +129,11 @@ if rpm -q tlp >/dev/null 2>&1; then
   ok "TLP is installed; repository TuneD helper should remain disabled"
 elif rpm -q tuned-ppd >/dev/null 2>&1; then
   ok "tuned-ppd package is installed"
-  systemctl is-active --quiet tuned.service && ok "tuned.service is active" || warn "tuned.service is not active"
+  if systemctl is-active --quiet tuned.service; then
+    ok "tuned.service is active"
+  else
+    warn "tuned.service is not active"
+  fi
   command -v tuned-adm >/dev/null 2>&1 && tuned-adm active || true
 else
   warn "Neither TLP nor tuned-ppd is installed"
