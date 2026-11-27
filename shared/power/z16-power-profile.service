@@ -1,7 +1,8 @@
 [Unit]
-Description=Select ThinkPad Z16 power profile based on AC connection
-After=power-profiles-daemon.service
-Wants=power-profiles-daemon.service
+Description=Select ThinkPad Z16 TuneD profile based on AC connection
+After=tuned.service
+Wants=tuned.service
+
 [Service]
 Type=oneshot
 ExecStart=/usr/local/sbin/z16-power-profile
