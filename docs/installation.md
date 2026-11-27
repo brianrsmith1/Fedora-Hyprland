@@ -30,24 +30,30 @@ The desktop stack is installed from the third-party `nett00n/hyprland` COPR repo
    bash fedora/validate.sh
    bash fedora/install.sh
    ```
-   Run as your regular user, not with sudo. The installer asks once before enabling the third-party Hyprland and Starship COPR repositories, RPM Fusion and installing the listed host packages. It does not change partitions, Windows, EFI, bootloader or firmware. If TLP is installed, it skips power-profiles-daemon and the repository's profile helper.
+   Run as your regular user, not with sudo. The installer asks once before enabling the third-party Hyprland and Starship COPR repositories, RPM Fusion and installing the listed host packages. It does not change partitions, Windows, EFI, bootloader or firmware. If TLP is installed, it skips the repository TuneD helper.
 4. Link the desktop configuration:
    ```bash
    bash shared/install-dotfiles.sh
    ```
-   Existing config directories are moved to timestamped backups before links are created. Review the script first. To roll back, remove the symlinks and restore the backup directories.
-5. Log out and select Hyprland from the display/session menu. If the session is not listed, reboot and inspect the display manager's session list.
+   Existing files, directories and unrelated symlinks are moved to timestamped backups before links are created. The installer is safe to rerun when its links are already in place. Review the script first.
+5. Run the diagnostic smoke check:
+   ```bash
+   bash fedora/post-install-check.sh
+   ```
+   Review any warnings. This checker does not change packages, services, firmware or partitions.
+6. Log out and select Hyprland from the display/session menu. If the session is not listed, reboot and inspect the display manager's session list.
 
 ## First-boot checks
 - Confirm Windows and Fedora remain selectable in the firmware boot menu.
 - Check Wi-Fi, Bluetooth, audio, microphone, brightness keys, touchpad and touchscreen.
 - Test suspend/resume, external displays, USB-C docks and charger plug/unplug behavior.
-- Run lspci -nnk, glxinfo -B and vulkaninfo --summary; confirm the Radeon 680M and RX 6500M are visible and use amdgpu.
-- Test the RX 6500M only for a selected game using DRI_PRIME=1 %command%.
-- Check powerprofilesctl get after AC/battery transitions if power-profiles-daemon is installed.
+- Run `lspci -nnk`, `glxinfo -B` and `vulkaninfo --summary`; confirm the Radeon 680M and RX 6500M are visible and use amdgpu.
+- Test the RX 6500M only for a selected game using `DRI_PRIME=1 %command%`.
+- Check `tuned-adm active` after AC/battery transitions. AC defaults to Balanced; Battery prefers Power Saver when available. Select `throughput-performance` manually for sustained heavy workloads.
+- Compare battery runtime and temperatures under matched brightness, refresh, Wi-Fi and workload settings.
 
 ## Rollback
-- **Desktop config:** remove the symlinks under ~/.config and restore the timestamped backups made by shared/install-dotfiles.sh.
+- **Desktop config:** remove the symlinks under ~/.config and restore the timestamped backups made by shared/install-dotfiles.sh. The installer preserves unrelated symlinks as backups too.
 - **Power helper:** disable z16-power-profile.service, remove /etc/udev/rules.d/90-z16-power-profile.rules and /etc/systemd/system/z16-power-profile.service, then reload systemd/udev. Do not do this while another power manager depends on it.
 - **Fedora:** use the previous kernel from the boot menu if an update regresses.
 - **Windows:** select the existing Windows Boot Manager entry. Never delete Windows partitions or EFI files as a Linux troubleshooting shortcut.
