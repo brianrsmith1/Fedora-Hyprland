@@ -23,10 +23,10 @@ printf '\n== Core commands ==\n'
 required=(Hyprland waybar kitty fuzzel swaync hyprlock hypridle hyprpaper thunar fish starship wpctl nmcli brightnessctl wl-paste wl-copy cliphist grim slurp swappy playerctl swaync-client wlogout)
 optional=(tuned-adm lspci glxinfo vulkaninfo)
 for cmd in "${required[@]}"; do
-  command -v "$cmd" >/dev/null 2>&1 && ok "$cmd" || fail "$cmd is missing"
+  if command -v "$cmd" >/dev/null 2>&1; then ok "$cmd"; else fail "$cmd is missing"; fi
 done
 for cmd in "${optional[@]}"; do
-  command -v "$cmd" >/dev/null 2>&1 && ok "$cmd" || warn "$cmd is unavailable; install/check its Fedora package"
+  if command -v "$cmd" >/dev/null 2>&1; then ok "$cmd"; else warn "$cmd is unavailable; install/check its Fedora package"; fi
 done
 
 printf '\n== Configuration files ==\n'
@@ -35,11 +35,11 @@ for file in \
   shared/waybar/config.jsonc shared/waybar/style.css shared/kitty/kitty.conf \
   shared/fuzzel/fuzzel.ini shared/swaync/config.json shared/swaync/style.css \
   shared/fish/config.fish shared/starship.toml; do
-  [[ -s "$ROOT/$file" ]] && ok "$file exists" || fail "$file is missing or empty"
+  if [[ -s "$ROOT/$file" ]]; then ok "$file exists"; else fail "$file is missing or empty"; fi
 done
 
 if command -v python3 >/dev/null 2>&1; then
-  python3 - "$ROOT" <<'PY'
+  if python3 - "$ROOT" <<'PY'
 import json
 import pathlib
 import sys
@@ -54,7 +54,11 @@ for relative in ("shared/waybar/config.jsonc", "shared/swaync/config.json"):
         sys.exit(1)
     print(f"[OK]   {relative} parses as JSON")
 PY
-  [[ $? -eq 0 ]] || fail "JSON configuration validation failed"
+  then
+    :
+  else
+    fail "JSON configuration validation failed"
+  fi
 else
   warn "python3 unavailable; skipped JSON configuration validation"
 fi
@@ -76,16 +80,28 @@ if [[ -L "$HOME/.config/starship.toml" && "$(readlink -f -- "$HOME/.config/stars
 else
   warn "~/.config/starship.toml is not linked to this checkout"
 fi
-[[ -x "$HOME/.local/bin/run-on-discrete-gpu" ]] && ok "run-on-discrete-gpu helper is executable" || warn "run-on-discrete-gpu helper is missing or not executable"
+if [[ -x "$HOME/.local/bin/run-on-discrete-gpu" ]]; then
+  ok "run-on-discrete-gpu helper is executable"
+else
+  warn "run-on-discrete-gpu helper is missing or not executable"
+fi
 
 printf '\n== AMD graphics ==\n'
 if command -v lspci >/dev/null 2>&1; then
   gpu_report="$(lspci -nnk 2>/dev/null | grep -A3 -Ei 'VGA compatible controller|Display controller|3D controller' || true)"
   if [[ -n "$gpu_report" ]]; then
     printf '%s\n' "$gpu_report"
-    grep -qi 'Kernel driver in use: amdgpu' <<<"$gpu_report" && ok "amdgpu is bound to at least one display device" || warn "No amdgpu binding found in the display-device report"
+    if grep -qi 'Kernel driver in use: amdgpu' <<<"$gpu_report"; then
+      ok "amdgpu is bound to at least one display device"
+    else
+      warn "No amdgpu binding found in the display-device report"
+    fi
     gpu_count="$(grep -Eic 'VGA compatible controller|Display controller|3D controller' <<<"$gpu_report" || true)"
-    (( gpu_count >= 2 )) && ok "Two or more graphics devices are visible" || warn "Only one graphics device detected; confirm the RX 6500M is visible"
+    if (( gpu_count >= 2 )); then
+      ok "Two or more graphics devices are visible"
+    else
+      warn "Only one graphics device detected; confirm the RX 6500M is visible"
+    fi
   else
     warn "No display controller was found by lspci"
   fi
